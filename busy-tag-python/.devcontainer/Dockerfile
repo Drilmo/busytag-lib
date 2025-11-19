@@ -92,22 +92,20 @@ RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 # Add uv to PATH
 ENV PATH="/home/$USERNAME/.cargo/bin:$PATH"
 
-# Install Node.js for Claude Code (if needed)
+# Install Node.js and Claude Code (as root)
 USER root
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
   apt-get install -y nodejs && \
   apt-get clean && rm -rf /var/lib/apt/lists/*
 
-USER $USERNAME
-
-# Install Claude Code globally
+# Install Claude Code globally (requires root)
 RUN npm install -g @anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}
 
 # Copy and set up firewall script
-USER root
 COPY init-firewall.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/init-firewall.sh && \
   echo "$USERNAME ALL=(root) NOPASSWD: /usr/local/bin/init-firewall.sh" > /etc/sudoers.d/$USERNAME-firewall && \
   chmod 0440 /etc/sudoers.d/$USERNAME-firewall
 
+# Switch back to non-root user
 USER $USERNAME
