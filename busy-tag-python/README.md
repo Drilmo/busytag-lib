@@ -23,13 +23,34 @@ This is the Python port of the .NET BusyTag.Lib library, providing the same func
 
 ## 📦 Installation
 
-### Using uv (recommended)
+### Using uv (Recommended) ⭐
+
+**Install uv if you haven't already:**
+
+On macOS/Linux:
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+On Windows:
+```powershell
+powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+**Option 1: Add to existing project**
 
 ```bash
-# Install uv if you haven't already
-curl -LsSf https://astral.sh/uv/install.sh | sh
+# Add busytag to your project
+uv add busytag
 
-# Create a new project with busytag
+# With demo extras for the interactive demo
+uv add "busytag[demo]"
+```
+
+**Option 2: Create new project with busytag**
+
+```bash
+# Create a new project
 uv init my-busytag-project
 cd my-busytag-project
 
@@ -37,42 +58,59 @@ cd my-busytag-project
 uv add busytag
 ```
 
-### Using pip
-
-```bash
-pip install busytag
-```
-
-### From source
+**Option 3: From source**
 
 ```bash
 git clone https://github.com/busy-tag/busytag-lib.git
 cd busytag-lib/busy-tag-python
-uv sync
+
+# Install in editable mode
+uv pip install -e .
+
+# With demo extras
+uv pip install -e ".[demo]"
+
+# With dev extras
+uv pip install -e ".[dev]"
+```
+
+### Using pip
+
+```bash
+# Basic installation
+pip install busytag
+
+# With demo extras
+pip install "busytag[demo]"
+
+# With dev extras
+pip install "busytag[dev]"
 ```
 
 ## 🖥️ Platform Support
 
-### Windows
+### Windows 🪟
 - **Device Discovery**: WMI-based VID/PID detection (303A:81DF)
 - **Port Format**: `COM1`, `COM2`, `COM3`, etc.
-- **Requirements**: `wmi` package (automatically installed)
+- **Requirements**: `wmi` package (automatically installed on Windows)
 - **Permissions**: Standard user permissions sufficient
 - **Tested on**: Windows 10/11
+- **Status**: ✅ Fully Supported
 
-### macOS
+### macOS 🍎
 - **Device Discovery**: `ioreg` USB enumeration + AT command validation
-- **Port Format**: `/dev/tty.usbmodem-xxx`
-- **Requirements**: Xcode command line tools
+- **Port Format**: `/dev/tty.usbmodem-xxx`, `/dev/cu.usbmodem-xxx`
+- **Requirements**: Xcode command line tools (`xcode-select --install`)
 - **Permissions**: May require accessibility permissions for serial access
 - **Tested on**: macOS 10.15+ (Catalina and newer)
+- **Status**: ✅ Fully Supported
 
-### Linux (Experimental)
+### Linux 🐧 (Experimental)
 - **Device Discovery**: `lsusb` command-line tool + AT command validation
 - **Port Format**: `/dev/ttyUSB0`, `/dev/ttyACM0`, etc.
-- **Requirements**: `usbutils` package
+- **Requirements**: `usbutils` package (`sudo apt install usbutils`)
 - **Permissions**: User must be in `dialout` group: `sudo usermod -a -G dialout $USER`
-- **Status**: Experimental support - enable via `enable_experimental_linux_support` flag
+- **Status**: ⚠️ Experimental - enable via `enable_experimental_linux_support = True`
 
 ## 🏃‍♂️ Quick Start
 
@@ -254,6 +292,53 @@ async def http_control():
 asyncio.run(http_control())
 ```
 
+## 🎮 Interactive Demo Application
+
+Try all features with our beautiful interactive web interface built with Streamlit!
+
+### Quick Launch
+
+**On Windows:**
+```bash
+cd busytag-lib/busy-tag-python
+
+# Install with demo extras
+uv pip install -e ".[demo]"
+
+# Launch demo
+cd demo
+run.bat
+```
+
+**On Mac/Linux:**
+```bash
+cd busytag-lib/busy-tag-python
+
+# Install with demo extras
+uv pip install -e ".[demo]"
+
+# Launch demo
+cd demo
+./run.sh
+```
+
+**Or manually:**
+```bash
+uv run streamlit run demo/app.py
+```
+
+### Demo Features
+
+- 💡 **LED Control** - Preset colors, custom RGB, brightness
+- 📁 **File Management** - Upload, download, delete with progress bars
+- ⚙️ **Configuration** - Device settings and AT commands
+- 🎨 **Patterns** - LED pattern control
+- 🌐 **HTTP API** - WiFi connectivity testing
+- ☁️ **Cloud API** - Remote control integration
+- 📋 **Activity Logs** - Real-time operation logging
+
+See [demo/README.md](demo/README.md) for complete documentation.
+
 ## 📋 System Requirements
 
 - **Python**: 3.10 or higher
@@ -266,14 +351,17 @@ asyncio.run(http_control())
 
 ## 🔧 Development
 
-### Setup with uv
+### Setup with uv (Recommended)
 
 ```bash
 # Clone the repository
 git clone https://github.com/busy-tag/busytag-lib.git
 cd busytag-lib/busy-tag-python
 
-# Install dependencies
+# Install in editable mode with dev dependencies
+uv pip install -e ".[dev]"
+
+# Or sync all dependencies (if you have a uv.lock)
 uv sync
 
 # Run tests
@@ -284,16 +372,22 @@ uv run black busytag/
 
 # Lint code
 uv run ruff check busytag/
+
+# Type check
+uv run mypy busytag/
 ```
 
-### Building
+### Building and Publishing
 
 ```bash
 # Build package
 uv build
 
-# Publish to PyPI
+# Publish to PyPI (requires credentials)
 uv publish
+
+# Or use twine
+uv run twine upload dist/*
 ```
 
 ## 📚 API Documentation

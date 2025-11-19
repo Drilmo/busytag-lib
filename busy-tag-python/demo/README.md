@@ -19,25 +19,39 @@ This demo application showcases all the features of the BusyTag Python library:
 
 ## 📦 Installation
 
-### Using uv (Recommended)
+### Using uv (Recommended) ⭐
+
+**Option 1: Install with demo extras (recommended)**
 
 ```bash
-# Navigate to the demo directory
-cd busy-tag-python/demo
+cd busy-tag-python
+
+# Install the library with demo dependencies
+uv pip install -e ".[demo]"
+```
+
+**Option 2: Install dependencies manually**
+
+```bash
+cd busy-tag-python
+
+# Sync base dependencies
+uv sync
 
 # Install demo dependencies
-uv pip install -r requirements.txt
-
-# Or install in the project environment
-cd ..
-uv sync
 uv pip install streamlit pillow
 ```
 
 ### Using pip
 
 ```bash
-cd busy-tag-python/demo
+cd busy-tag-python
+
+# Install with demo extras
+pip install -e ".[demo]"
+
+# Or install dependencies separately
+cd demo
 pip install -r requirements.txt
 ```
 
@@ -45,20 +59,40 @@ pip install -r requirements.txt
 
 ### 1. Connect Your BusyTag Device
 
-Make sure your BusyTag device is connected to your Mac via USB.
+Make sure your BusyTag device is connected via USB.
+
+- **Windows**: Device appears as COM port (e.g., COM3, COM4)
+- **Mac**: Device appears as `/dev/tty.usbmodem*`
+- **Linux**: Device appears as `/dev/ttyUSB*` or `/dev/ttyACM*`
 
 ### 2. Launch the Demo
 
-From the `demo` directory:
+**Using the launcher script (easiest):**
 
+On Mac/Linux:
 ```bash
-streamlit run app.py
+cd busy-tag-python/demo
+./run.sh
 ```
 
-Or if using uv:
+On Windows:
+```bash
+cd busy-tag-python\demo
+run.bat
+```
+
+**Or manually with uv:**
 
 ```bash
-uv run streamlit run app.py
+cd busy-tag-python
+uv run streamlit run demo/app.py
+```
+
+**Or with streamlit directly:**
+
+```bash
+cd busy-tag-python/demo
+streamlit run app.py
 ```
 
 ### 3. Open Your Browser
@@ -74,22 +108,60 @@ If it doesn't open automatically, navigate to that URL manually.
 3. Click **"🔌 Connect"**
 4. Explore the different tabs!
 
-## 🖥️ Mac-Specific Notes
+## 🖥️ Platform-Specific Notes
 
-### Serial Port Permissions
+### Windows 🪟
 
-On macOS, you may need to grant permissions for serial port access:
+**Port Format**: `COM3`, `COM4`, etc.
 
+**Device Discovery**: Automatic via WMI (Windows Management Instrumentation)
+
+**Requirements**:
+- Python 3.10+
+- `wmi` package (automatically installed)
+- Standard user permissions
+
+**USB Drivers**: Windows usually auto-installs drivers. If not:
+- Check Device Manager for "Unknown Device"
+- May need USB Serial (CDC) drivers
+
+### macOS 🍎
+
+**Port Format**: `/dev/tty.usbmodem14101` or `/dev/cu.usbmodem*`
+
+**Device Discovery**: Via `ioreg` USB enumeration
+
+**Serial Port Permissions**:
+On macOS, you may need to grant permissions:
 1. Go to **System Preferences** → **Security & Privacy** → **Privacy** → **Accessibility**
 2. Add your terminal application or Python to the allowed applications
 
-### Device Detection
+**Requirements**:
+- Python 3.10+
+- Xcode Command Line Tools: `xcode-select --install`
 
-BusyTag devices on Mac appear as `/dev/tty.usbmodem*` or `/dev/cu.usbmodem*` devices.
+### Linux 🐧
 
-### Port Format
+**Port Format**: `/dev/ttyUSB0`, `/dev/ttyACM0`, etc.
 
-Example: `/dev/tty.usbmodem14101`
+**Device Discovery**: Via `lsusb` (experimental support)
+
+**Permissions**:
+```bash
+# Add your user to the dialout group
+sudo usermod -a -G dialout $USER
+
+# Log out and back in for changes to take effect
+```
+
+**Requirements**:
+- Python 3.10+
+- `usbutils` package: `sudo apt install usbutils`
+
+**Enable Experimental Support**:
+```python
+manager.enable_experimental_linux_support = True
+```
 
 ## 📱 Demo Tabs
 

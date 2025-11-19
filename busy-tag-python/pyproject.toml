@@ -36,6 +36,10 @@ dev = [
     "ruff>=0.3.0",
     "mypy>=1.9.0",
 ]
+demo = [
+    "streamlit>=1.30.0",
+    "pillow>=10.0.0",
+]
 
 [project.urls]
 Homepage = "https://github.com/busy-tag/busytag-lib"
