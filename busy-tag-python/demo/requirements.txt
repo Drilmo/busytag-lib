@@ -1,0 +1,3 @@
+# BusyTag Demo Requirements
+streamlit>=1.30.0
+pillow>=10.0.0
